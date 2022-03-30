@@ -1,34 +1,38 @@
 package com.example.parstagramapp.fragments
 
+import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import com.example.parstagramapp.MainActivity
+import com.example.parstagramapp.Post
 import com.example.parstagramapp.R
+import com.parse.ParseFile
+import com.parse.ParseUser
+import java.io.File
+import com.parse.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ComposeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ComposeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+//    val photoFileName = "photo.jpg"
+//    var photoFile: File? = null
+//    val CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034
+//
+//    lateinit var ivPreview: ImageView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,24 +41,113 @@ class ComposeFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_compose, container, false)
     }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        // set on click listeners and set up the logic
+//        ivPreview = view.findViewById(R.id.imageView)
+//        // prepend findViewById with a view.
+//        view.findViewById<Button>(R.id.btnSubmit).setOnClickListener {
+//            // send post to server without an image
+//            // get the description they have inputted
+//            val description = view.findViewById<EditText>(R.id.description).text.toString()
+//            val user = ParseUser.getCurrentUser()
+//            if (photoFile != null) {
+//                submitPost(description,user,photoFile!!)
+//            } else {
+//                Log.e(MainActivity.TAG, "User did not take a picture")
+//                Toast.makeText(requireContext(),  "Please take a picture", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//
+//        view.findViewById<Button>(R.id.btnTakePicture).setOnClickListener {
+//            // launch camera to let user take picture
+//            onLaunchCamera()
+//        }
+//
+//
+//        fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//            super.onActivityResult(requestCode, resultCode, data)
+//            if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+//                if (resultCode == AppCompatActivity.RESULT_OK) {
+//                    // by this point we have the camera photo on disk
+//                    val takenImage = BitmapFactory.decodeFile(photoFile!!.absolutePath)
+//                    // RESIZE BITMAP, see section below
+//                    // Load the taken image into a preview
+////                    val ivPreview: ImageView = view.findViewById(R.id.imageView)
+//                    ivPreview.setImageBitmap(takenImage)
+//                } else { // Result was a failure
+//                    Toast.makeText(requireContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun submitPost(description: String, user: ParseUser, file: File) {
+//
+//            // create the Post object
+//            val post = Post()
+//            post.setDescription(description)
+//            post.setUser(user)
+//            post.setImage(ParseFile(file))
+//            post.saveInBackground{ exception ->
+//                if (exception != null) {
+//                    // something has gone wrong
+//                    Log.e(MainActivity.TAG, "Error while saving post")
+//                    exception.printStackTrace()
+//                    Toast.makeText(requireContext(), "Error while saving post", Toast.LENGTH_SHORT).show()
+//                } else {
+//                    Log.i(MainActivity.TAG, "Successfully saved post")
+//                    // TODO: Reset EditText field to be empty
+//                    view?.findViewById<EditText>(R.id.description)?.setText("")
+//                    // TODO: Reset the ImageView to be empty
+//                    view?.findViewById<ImageView>(R.id.imageView)?.setImageResource(android.R.color.transparent)
+//                }
+//            }
+//    }
+//
+//    private fun onLaunchCamera() {
+//        // create Intent to take a picture and return control to the calling application
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        // Create a File reference for future access
+//        photoFile = getPhotoFileUri(photoFileName)
+//
+//        // wrap File object into a content provider
+//        // required for API >= 24
+//        // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
+//        if (photoFile != null) {
+//            val fileProvider: Uri =
+//                FileProvider.getUriForFile(requireContext(), "com.codepath.fileprovider", photoFile!!)
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+//
+//            // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+//            // So as long as the result is not null, it's safe to use the intent.
+//
+//            // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+//            // So as long as the result is not null, it's safe to use the intent.
+//            if (intent.resolveActivity(requireContext().packageManager) != null) {
+//                // Start the image capture intent to take photo
+//                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE)
+//            }
+//        }
+//    }
+//
+//    private fun getPhotoFileUri(fileName: String): File? {
+//
+//            // Get safe storage directory for photos
+//            // Use `getExternalFilesDir` on Context to access package-specific directories.
+//            // This way, we don't need to request external read/write runtime permissions.
+//            val mediaStorageDir =
+//                File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), MainActivity.TAG)
+//
+//            // Create the storage directory if it does not exist
+//            if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
+//                Log.d(MainActivity.TAG, "failed to create directory")
+//            }
+//
+//            // Return the file target for the photo based on filename
+//            return File(mediaStorageDir.path + File.separator + fileName)
+//    }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ComposeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ComposeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 }

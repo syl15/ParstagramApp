@@ -1,5 +1,4 @@
 package com.example.parstagramapp
-
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -37,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             val description = findViewById<EditText>(R.id.description).text.toString()
             val user = ParseUser.getCurrentUser()
             if (photoFile != null) {
-            submitPost(description,user,photoFile!!)
+                submitPost(description,user,photoFile!!)
             } else {
                 Log.e(TAG, "User did not take a picture")
                 Toast.makeText(this, "Please take a picture", Toast.LENGTH_SHORT).show()
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-       // queryPosts()
+        // queryPosts()
     }
 
     // send Post object to our parse server
@@ -153,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                     if (posts != null) {
                         for (post in posts) {
                             Log.i(TAG, "Post: "+ post.getDescription() + " , username: " +
-                            post.getUser()?.username)
+                                    post.getUser()?.username)
                         }
                     }
                 }
